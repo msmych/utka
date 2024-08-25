@@ -14,6 +14,8 @@ import uk.matvey.utka.ktor.KtorKit.pathParam
 import uk.matvey.utka.ktor.KtorKit.queryParam
 import uk.matvey.utka.ktor.KtorKit.queryParamOrNull
 import uk.matvey.utka.ktor.KtorKit.queryParams
+import uk.matvey.utka.ktor.KtorKit.receiveParamsMap
+import uk.matvey.utka.ktor.KtorKit.setFormData
 
 class KtorKitTest {
 
@@ -69,5 +71,29 @@ class KtorKitTest {
             assertThat(status).isEqualTo(OK)
             assertThat(bodyAsText().split(',')).containsExactlyInAnyOrder(q, qq)
         }
+    }
+
+    @Test
+    fun `should send and receive form data`() = testApplication {
+        // given
+        routing {
+            get("/tests/form-data") {
+                val params = call.receiveParamsMap()
+                call.respondText(params.entries.joinToString(",") { (k, v) -> "$k=$v" })
+            }
+        }
+        val k1 = randomAlphanumeric(8)
+        val v1 = randomAlphanumeric(8)
+        val k2 = randomAlphanumeric(8)
+        val v2 = randomAlphanumeric(8)
+
+        // when
+        val rs = client.get("/tests/form-data") {
+            setFormData(k1 to v1, k2 to v2)
+        }
+
+        // then
+        assertThat(rs.status).isEqualTo(OK)
+        assertThat(rs.bodyAsText()).isEqualTo("$k1=$v1,$k2=$v2")
     }
 }

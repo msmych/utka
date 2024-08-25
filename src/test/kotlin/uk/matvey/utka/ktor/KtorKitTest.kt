@@ -4,7 +4,6 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.application.call
-import io.ktor.server.request.receiveParameters
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.testing.testApplication
@@ -15,6 +14,7 @@ import uk.matvey.utka.ktor.KtorKit.pathParam
 import uk.matvey.utka.ktor.KtorKit.queryParam
 import uk.matvey.utka.ktor.KtorKit.queryParamOrNull
 import uk.matvey.utka.ktor.KtorKit.queryParams
+import uk.matvey.utka.ktor.KtorKit.receiveParamsMap
 import uk.matvey.utka.ktor.KtorKit.setFormData
 
 class KtorKitTest {
@@ -78,8 +78,7 @@ class KtorKitTest {
         // given
         routing {
             get("/tests/form-data") {
-                val params = call.receiveParameters().entries()
-                    .associate { (k, v) -> k to v.joinToString(";") }
+                val params = call.receiveParamsMap()
                 call.respondText(params.entries.joinToString(",") { (k, v) -> "$k=$v" })
             }
         }

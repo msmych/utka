@@ -1,10 +1,11 @@
-name: Build Check
+name: Build check
 
 on:
   push:
     branches:
       - '*'
       - '!master'
+      - '!main'
 
 jobs:
   build:

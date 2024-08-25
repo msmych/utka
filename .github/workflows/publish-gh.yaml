@@ -22,4 +22,4 @@ jobs:
       - name: Publish
         run: ./gradlew publish
         env:
-          GH_PACKAGES_RO_TOKEN: ${{ secrets.GH_PACKAGES_RW_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}

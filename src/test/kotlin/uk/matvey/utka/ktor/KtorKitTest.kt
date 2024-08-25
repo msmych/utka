@@ -4,6 +4,7 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.application.call
+import io.ktor.server.request.receiveParameters
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.testing.testApplication
@@ -14,6 +15,7 @@ import uk.matvey.utka.ktor.KtorKit.pathParam
 import uk.matvey.utka.ktor.KtorKit.queryParam
 import uk.matvey.utka.ktor.KtorKit.queryParamOrNull
 import uk.matvey.utka.ktor.KtorKit.queryParams
+import uk.matvey.utka.ktor.KtorKit.setFormData
 
 class KtorKitTest {
 
@@ -69,5 +71,30 @@ class KtorKitTest {
             assertThat(status).isEqualTo(OK)
             assertThat(bodyAsText().split(',')).containsExactlyInAnyOrder(q, qq)
         }
+    }
+
+    @Test
+    fun `should send and receive form data`() = testApplication {
+        // given
+        routing {
+            get("/tests/form-data") {
+                val params = call.receiveParameters().entries()
+                    .associate { (k, v) -> k to v.joinToString(";") }
+                call.respondText(params.entries.joinToString(",") { (k, v) -> "$k=$v" })
+            }
+        }
+        val k1 = randomAlphanumeric(8)
+        val v1 = randomAlphanumeric(8)
+        val k2 = randomAlphanumeric(8)
+        val v2 = randomAlphanumeric(8)
+
+        // when
+        val rs = client.get("/tests/form-data") {
+            setFormData(k1 to v1, k2 to v2)
+        }
+
+        // then
+        assertThat(rs.status).isEqualTo(OK)
+        assertThat(rs.bodyAsText()).isEqualTo("$k1=$v1,$k2=$v2")
     }
 }

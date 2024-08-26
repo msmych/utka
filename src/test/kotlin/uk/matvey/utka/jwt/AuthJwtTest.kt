@@ -61,4 +61,18 @@ class AuthJwtTest {
         assertThat(auth.validateJwt(AuthJwt(Algorithm.HMAC256("wrong")).issueJwt(expiration = 10.minutes)))
             .isEqualTo(INVALID)
     }
+
+    @Test
+    fun `should invalidate jwt`() {
+        // given
+        val auth = AuthJwt(algorithm, issuer)
+        val token = auth.issueJwt(expiration = 10.minutes)
+        assertThat(auth.validateJwt(token)).isEqualTo(VALID)
+
+        // when
+        val invalidated = auth.invalidateJwt(auth.invalidateJwt(token))
+
+        // then
+        assertThat(auth.validateJwt(invalidated)).isEqualTo(INVALID)
+    }
 }

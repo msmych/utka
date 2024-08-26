@@ -66,4 +66,18 @@ class AuthJwt(
         }
         return ValidationResult.VALID
     }
+
+    fun invalidateJwt(token: String, configure: JWTCreator.Builder.() -> Unit = {}): String {
+        return JWT.create()
+            .apply {
+                val decoded = JWT.decode(token)
+                decoded.issuedAt?.let { withIssuedAt(it) }
+                decoded.issuer?.let { withIssuer(it) }
+                decoded.audience?.forEach { withAudience(it) }
+                decoded.subject?.let { withSubject(it) }
+                configure()
+            }
+            .withExpiresAt(Instant.MIN)
+            .sign(algorithm)
+    }
 }

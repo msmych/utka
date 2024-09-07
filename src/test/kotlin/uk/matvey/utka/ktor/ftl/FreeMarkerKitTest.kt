@@ -26,6 +26,10 @@ class FreeMarkerKitTest {
                 data class UserRs(val name: String)
                 call.respondFtl("tests/free-marker", UserRs(call.queryParam("name")))
             }
+            get("/tests/free-marker/object-ftl") {
+                data class UserRs(val name: String)
+                call.respondFtl("tests/free-marker.ftl", UserRs(call.queryParam("name")))
+            }
             get("/tests/free-marker/map") {
                 call.respondFtl("tests/free-marker", "name" to call.queryParam("name"))
             }
@@ -34,6 +38,10 @@ class FreeMarkerKitTest {
 
         // when / then
         client.get("/tests/free-marker/object?name=$name").apply {
+            assertThat(status).isEqualTo(OK)
+            assertThat(bodyAsText()).contains("<h1>Hello, $name!</h1>")
+        }
+        client.get("/tests/free-marker/object-ftl?name=$name").apply {
             assertThat(status).isEqualTo(OK)
             assertThat(bodyAsText()).contains("<h1>Hello, $name!</h1>")
         }

@@ -21,7 +21,7 @@ object FreeMarkerKit {
     }
 
     suspend fun ApplicationCall.respondFtl(template: String, model: Any? = null) {
-        respond(FreeMarkerContent("$template.ftl", model))
+        respond(FreeMarkerContent(if (template.endsWith(".ftl")) template else "$template.ftl", model))
     }
 
     suspend fun ApplicationCall.respondFtl(template: String, vararg values: Pair<String, Any?>) {

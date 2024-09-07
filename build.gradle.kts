@@ -17,21 +17,22 @@ repositories {
         url = uri("https://maven.pkg.github.com/msmych/kit")
         credentials {
             username = "utka"
-            password = project.findProperty("ghPackagesRoToken") as? String ?: System.getenv("GH_PACKAGES_RO_TOKEN")
+            password = System.getenv("GH_PACKAGES_RO_TOKEN")
         }
     }
 }
 
 dependencies {
-    api("io.ktor:ktor-server-core")
-    api("io.ktor:ktor-server-netty")
-    api("io.ktor:ktor-server-freemarker")
-    api("io.ktor:ktor-server-auth")
+    api("io.ktor:ktor-network-tls-certificates")
     api("io.ktor:ktor-serialization-kotlinx-json")
+    api("io.ktor:ktor-server-auth")
+    api("io.ktor:ktor-server-core")
+    api("io.ktor:ktor-server-freemarker")
+    api("io.ktor:ktor-server-netty")
 
-    api("io.ktor:ktor-client-core")
     api("io.ktor:ktor-client-cio")
     api("io.ktor:ktor-client-content-negotiation")
+    api("io.ktor:ktor-client-core")
 
     api("com.auth0:java-jwt:$jwtVersion")
 

@@ -1,0 +1,31 @@
+.col {
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.split {
+    justify-content: space-between;
+}
+
+.t1 {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.gap-8 {
+    gap: 8px;
+}
+
+.gap-16 {
+    gap: 16px;
+}
+
+.click {
+    cursor: pointer;
+}

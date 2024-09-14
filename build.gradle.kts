@@ -80,7 +80,7 @@ publishing {
 
             pom {
                 name = "Utka"
-                description = "HTTP utilities"
+                description = "Kotlin HTTP utilities"
                 url = "https://github.com/msmych/utka"
 
                 licenses {

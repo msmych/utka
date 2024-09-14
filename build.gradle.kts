@@ -1,7 +1,7 @@
 plugins {
     `maven-publish`
-    kotlin("jvm") version "2.0.0"
-    kotlin("plugin.serialization") version "2.0.0"
+    kotlin("jvm") version "2.0.20"
+    kotlin("plugin.serialization") version "2.0.20"
     id("io.ktor.plugin") version "2.3.12"
 }
 
@@ -13,11 +13,11 @@ val assertjVersion: String by project
 repositories {
     mavenCentral()
     maven {
-        name = "GitHubPackages"
+        name = "KitPackages"
         url = uri("https://maven.pkg.github.com/msmych/kit")
         credentials {
             username = "utka"
-            password = System.getenv("GH_PACKAGES_RO_TOKEN")
+            password = project.findProperty("ghPackagesRoToken") as? String ?: System.getenv("GH_PACKAGES_RO_TOKEN")
         }
     }
 }
@@ -65,12 +65,15 @@ tasks.shadowJar {
     enabled = false
 }
 
+group = "uk.matvey"
+version = project.findProperty("releaseVersion") as? String ?: "0.1.0-SNAPSHOT"
+
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
-            groupId = "uk.matvey"
+            groupId = project.group.toString()
             artifactId = "utka"
-            version = project.findProperty("releaseVersion") as? String ?: "0.1.0-SNAPSHOT"
+            version = project.version.toString()
 
             from(components["java"])
 

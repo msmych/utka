@@ -1,6 +1,6 @@
 # Utka
 
-HTTP utilities.
+Kotlin HTTP utilities.
 
 ## KtorKit
 

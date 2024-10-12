@@ -31,6 +31,7 @@ dependencies {
     api("io.ktor:ktor-server-html-builder")
     api("io.ktor:ktor-server-netty")
 
+    api("io.ktor:ktor-client-auth")
     api("io.ktor:ktor-client-cio")
     api("io.ktor:ktor-client-content-negotiation")
     api("io.ktor:ktor-client-core")

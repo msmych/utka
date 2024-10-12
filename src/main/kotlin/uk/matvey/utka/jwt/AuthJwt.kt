@@ -52,7 +52,7 @@ class AuthJwt(
     ): ValidationResult {
         val decoded = try {
             JWT.decode(token)
-        } catch (e: JWTDecodeException) {
+        } catch (_: JWTDecodeException) {
             return ValidationResult.COULD_NOT_DECODE
         }
         try {
@@ -63,7 +63,7 @@ class AuthJwt(
                 }
                 .build()
                 .verify(decoded)
-        } catch (e: JWTVerificationException) {
+        } catch (_: JWTVerificationException) {
             return ValidationResult.INVALID
         }
         return ValidationResult.VALID

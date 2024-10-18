@@ -2,7 +2,7 @@ plugins {
     `maven-publish`
     kotlin("jvm") version "2.0.20"
     kotlin("plugin.serialization") version "2.0.20"
-    id("io.ktor.plugin") version "2.3.12"
+    id("io.ktor.plugin") version "3.0.0"
 }
 
 val kitVersion: String by project
@@ -30,8 +30,9 @@ dependencies {
     api("io.ktor:ktor-server-freemarker")
     api("io.ktor:ktor-server-html-builder")
     api("io.ktor:ktor-server-netty")
+    api("io.ktor:ktor-server-sse")
+    api("io.ktor:ktor-server-status-pages")
 
-    api("io.ktor:ktor-client-auth")
     api("io.ktor:ktor-client-cio")
     api("io.ktor:ktor-client-content-negotiation")
     api("io.ktor:ktor-client-core")

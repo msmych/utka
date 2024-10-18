@@ -1,12 +1,18 @@
 package uk.matvey.utka.ktor
 
+import io.ktor.client.plugins.sse.SSE
+import io.ktor.client.plugins.sse.sse
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode.Companion.OK
-import io.ktor.server.application.call
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
+import io.ktor.server.sse.sse
 import io.ktor.server.testing.testApplication
+import io.ktor.sse.ServerSentEvent
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.withTimeoutOrNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import uk.matvey.kit.random.RandomKit.randomAlphanumeric
@@ -95,5 +101,34 @@ class KtorKitTest {
         // then
         assertThat(rs.status).isEqualTo(OK)
         assertThat(rs.bodyAsText()).isEqualTo("$k1=$v1,$k2=$v2")
+    }
+
+    @Test
+    fun `should support SSE`() = testApplication {
+        // given
+        val s = randomAlphanumeric(8)
+        install(io.ktor.server.sse.SSE)
+        routing {
+            sse("/tests/events") {
+                send(ServerSentEvent(s))
+            }
+        }
+        val client = createClient {
+            install(SSE)
+        }
+        val flow = MutableSharedFlow<String?>(replay = 1)
+
+        // when
+        client.sse("/tests/events") {
+            incoming.collect { event ->
+                flow.emit(event.data)
+            }
+        }
+
+        // then
+        val result = withTimeoutOrNull(1000) {
+            flow.firstOrNull()
+        }
+        assertThat(result).isEqualTo(s)
     }
 }

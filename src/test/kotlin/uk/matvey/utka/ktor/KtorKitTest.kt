@@ -4,6 +4,7 @@ import io.ktor.client.plugins.sse.SSE
 import io.ktor.client.plugins.sse.sse
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
+import io.ktor.http.HttpStatusCode.Companion.NoContent
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
@@ -17,6 +18,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import uk.matvey.kit.random.RandomKit.randomAlphanumeric
 import uk.matvey.utka.ktor.KtorKit.pathParam
+import uk.matvey.utka.ktor.KtorKit.pathParamOrNull
 import uk.matvey.utka.ktor.KtorKit.queryParam
 import uk.matvey.utka.ktor.KtorKit.queryParamOrNull
 import uk.matvey.utka.ktor.KtorKit.queryParams
@@ -32,15 +34,34 @@ class KtorKitTest {
             get("/tests/{id}/path") {
                 call.respondText(call.pathParam("id"))
             }
+            get("/tests/optional/{id?}") {
+                call.pathParamOrNull("id")?.let {
+                    call.respondText(it)
+                } ?: call.respond(NoContent, null)
+            }
         }
+
         val pathParam = randomAlphanumeric(8)
 
         // when
-        val rs = client.get("/tests/$pathParam/path")
+        var rs = client.get("/tests/$pathParam/path")
 
         // then
         assertThat(rs.status).isEqualTo(OK)
         assertThat(rs.bodyAsText()).isEqualTo(pathParam)
+
+        // when
+        rs = client.get("/tests/optional/$pathParam")
+
+        // then
+        assertThat(rs.status).isEqualTo(OK)
+        assertThat(rs.bodyAsText()).isEqualTo(pathParam)
+
+        // when
+        rs = client.get("/tests/optional")
+
+        // then
+        assertThat(rs.status).isEqualTo(NoContent)
     }
 
     @Test

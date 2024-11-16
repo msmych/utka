@@ -12,6 +12,8 @@ object KtorKit {
 
     fun ApplicationCall.pathParam(name: String) = parameters.getOrFail(name)
 
+    fun ApplicationCall.pathParamOrNull(name: String) = parameters[name]
+
     fun ApplicationCall.queryParamOrNull(name: String) = request.queryParameters[name]
 
     fun ApplicationCall.queryParam(name: String) = request.queryParameters.getOrFail(name)
